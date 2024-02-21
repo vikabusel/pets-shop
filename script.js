@@ -1,5 +1,4 @@
-const items = [
-  {
+const items = [{
     title: "Игрушка мячик",
     description: "Ваш питомец будет счастлив!",
     tags: ["cat", "dog"],
@@ -84,3 +83,52 @@ const items = [
     img: "./img/12.jpeg",
   },
 ];
+
+const itemTemplate = document.querySelector('#item-template');
+const shopItems = document.querySelector('#shop-items');
+
+function productCardTemplate (title, description, img, price, tags) {
+  const productCard = itemTemplate.content.cloneNode(true);
+  productCard.querySelector('h1').textContent = title;
+  productCard.querySelector('p').textContent = description;
+  productCard.querySelector('img').src = img;
+  productCard.querySelector('.price').textContent = price;
+
+  const containerTags = productCard.querySelector('.tags');
+  tags.forEach((tag) => {
+    const element = document.createElement('span');
+    element.textContent = tag;
+    element.classList.add('tag');
+    containerTags.append(element);
+  });
+
+  return productCard;
+}
+
+items.forEach(function(item) {
+  const card = productCardTemplate(item.title, item.description, item.img, item.price, item.tags);
+  shopItems.append(card);
+});
+
+
+
+const searchInput = document.querySelector('#search-input');
+const searchButton = document.querySelector('#search-btn');
+const nothingFound = document.querySelector('#nothing-found');
+
+searchButton.addEventListener("click", function () {
+  const searchString = searchInput.value.trim().toLowerCase();
+  const searchResult = items.filter((item) => item.title.trim().toLowerCase().includes(searchString));
+
+  nothingFound.textContent = "";
+  shopItems.innerHTML = "";
+
+  if (searchResult.length == 0) {
+    nothingFound.textContent = "Ничего не найдено";
+  } else {
+    searchResult.forEach(function(item) {
+      const card = productCardTemplate(item.title, item.description, item.img, item.price, item.tags);
+      shopItems.append(card);
+    })
+  }
+});
